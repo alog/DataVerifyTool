@@ -187,6 +187,7 @@ For SQL 2008,   Server=myServerName\myInstanceName; User Id=myUsername;Password=
             int n=array.Count()-1 ;
             string[] columnArray = new string[n] ;
             string[] sasResult = new string[n];
+            string[] masResult = new string[n];
             Array.Copy(array, 1, columnArray, 0, n );
             string fiedsForQuery = string.Join(",", columnArray );
             LogToScreenAndFile(fiedsForQuery+"----------------");
@@ -206,18 +207,29 @@ For SQL 2008,   Server=myServerName\myInstanceName; User Id=myUsername;Password=
                        //   
                         for (int i = 0; i < n; i++)
                         {   
-                             
-                            sasResult[i] = rdr.IsDBNull(i) ? "Null" : rdr[i].ToString();
+                             sasResult[i] = rdr.IsDBNull(i) ? "Null" : rdr[i].ToString();
                         }
-
+                        LogToScreenAndFile(string.Join(",", sasResult));
                         using (SqlConnection masConnection = new SqlConnection(mas.connectionString))
-                        { 
-                            connection.Open();
-                            string sqlText = string.Format(@"select {0} from {1} where {2}=={3} ", 
+                        {
+                            masConnection.Open();
+                            string masSqlText = string.Format(@"select {0} from {1} where {2}={3} ", 
                                 fiedsForQuery, table, columnArray[0], sasResult[0]);
-                            SqlCommand masSqlCmd = new SqlCommand(sqlText, connection);
+                            SqlCommand masSqlCmd = new SqlCommand(masSqlText, masConnection);
                             using (SqlDataReader masRdr = masSqlCmd.ExecuteReader())
-                            XXXXXXXXXXXXXXXXX
+                            {
+                                while (masRdr.Read())
+                                {
+                                    for (int i = 0; i < n; i++)
+                                    {
+                                        masResult[i] = rdr.IsDBNull(i) ? "Null" : rdr[i].ToString();
+                                    }
+                                }
+                                LogToScreenAndFile("MAS --"+string.Join(",", masResult));
+                            
+                            }
+
+                            //XXXXXXXXXXXXXXXXX
                         
                         
                         
@@ -227,7 +239,7 @@ For SQL 2008,   Server=myServerName\myInstanceName; User Id=myUsername;Password=
 
 
 
-                        LogToScreenAndFile(string.Join(",", sasResult ));
+                        
                     }
                 }
 
