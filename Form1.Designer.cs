@@ -28,24 +28,79 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.connect = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.verify = new System.Windows.Forms.Button();
             this.result = new System.Windows.Forms.TextBox();
+            this.closeMe = new System.Windows.Forms.Button();
+            this.tableName = new System.Windows.Forms.TextBox();
+            this.clearScreen = new System.Windows.Forms.Button();
+            this.connect = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.masDb = new System.Windows.Forms.TextBox();
-            this.closeMe = new System.Windows.Forms.Button();
-            this.cmdString = new System.Windows.Forms.TextBox();
-            this.runSQLQuery = new System.Windows.Forms.Button();
             this.sasDb = new System.Windows.Forms.TextBox();
-            this.tableName = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.clearScreen = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.deleteObject = new System.Windows.Forms.Button();
+            this.objectId = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // verify
+            // 
+            this.verify.Location = new System.Drawing.Point(84, 49);
+            this.verify.Name = "verify";
+            this.verify.Size = new System.Drawing.Size(111, 23);
+            this.verify.TabIndex = 5;
+            this.verify.Text = "Verify";
+            this.verify.UseVisualStyleBackColor = true;
+            this.verify.Click += new System.EventHandler(this.verifyClick);
+            // 
+            // result
+            // 
+            this.result.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.result.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.result.Location = new System.Drawing.Point(0, 177);
+            this.result.Multiline = true;
+            this.result.Name = "result";
+            this.result.ReadOnly = true;
+            this.result.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.result.Size = new System.Drawing.Size(1088, 336);
+            this.result.TabIndex = 7;
+            // 
+            // closeMe
+            // 
+            this.closeMe.Location = new System.Drawing.Point(133, 148);
+            this.closeMe.Name = "closeMe";
+            this.closeMe.Size = new System.Drawing.Size(75, 23);
+            this.closeMe.TabIndex = 9;
+            this.closeMe.Text = "Exit";
+            this.closeMe.UseVisualStyleBackColor = true;
+            this.closeMe.Click += new System.EventHandler(this.closeMe_Click);
+            // 
+            // tableName
+            // 
+            this.tableName.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tableName.Location = new System.Drawing.Point(84, 18);
+            this.tableName.Name = "tableName";
+            this.tableName.Size = new System.Drawing.Size(230, 25);
+            this.tableName.TabIndex = 13;
+            // 
+            // clearScreen
+            // 
+            this.clearScreen.Location = new System.Drawing.Point(12, 148);
+            this.clearScreen.Name = "clearScreen";
+            this.clearScreen.Size = new System.Drawing.Size(75, 23);
+            this.clearScreen.TabIndex = 15;
+            this.clearScreen.Text = "ClearScreen";
+            this.clearScreen.UseVisualStyleBackColor = true;
+            this.clearScreen.Click += new System.EventHandler(this.ClearResut);
             // 
             // connect
             // 
-            this.connect.Location = new System.Drawing.Point(25, 22);
+            this.connect.Location = new System.Drawing.Point(46, 96);
             this.connect.Name = "connect";
             this.connect.Size = new System.Drawing.Size(75, 23);
             this.connect.TabIndex = 2;
@@ -56,137 +111,120 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(117, 33);
+            this.label1.Location = new System.Drawing.Point(10, 31);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "MAS";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // verify
-            // 
-            this.verify.Location = new System.Drawing.Point(153, 88);
-            this.verify.Name = "verify";
-            this.verify.Size = new System.Drawing.Size(111, 23);
-            this.verify.TabIndex = 5;
-            this.verify.Text = "Verify";
-            this.verify.UseVisualStyleBackColor = true;
-            this.verify.Click += new System.EventHandler(this.verifyClick);
-            // 
-            // result
-            // 
-            this.result.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.result.Location = new System.Drawing.Point(25, 166);
-            this.result.Multiline = true;
-            this.result.Name = "result";
-            this.result.ReadOnly = true;
-            this.result.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.result.Size = new System.Drawing.Size(948, 335);
-            this.result.TabIndex = 7;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(119, 63);
+            this.label2.Location = new System.Drawing.Point(12, 61);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(28, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "SAS";
-            this.label2.Click += new System.EventHandler(this.ClearResut);
             // 
             // masDb
             // 
             this.masDb.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.masDb.Location = new System.Drawing.Point(153, 25);
+            this.masDb.Location = new System.Drawing.Point(46, 23);
             this.masDb.Name = "masDb";
-            this.masDb.Size = new System.Drawing.Size(820, 25);
+            this.masDb.Size = new System.Drawing.Size(357, 25);
             this.masDb.TabIndex = 0;
-            // 
-            // closeMe
-            // 
-            this.closeMe.Location = new System.Drawing.Point(25, 86);
-            this.closeMe.Name = "closeMe";
-            this.closeMe.Size = new System.Drawing.Size(75, 23);
-            this.closeMe.TabIndex = 9;
-            this.closeMe.Text = "Exit";
-            this.closeMe.UseVisualStyleBackColor = true;
-            this.closeMe.Click += new System.EventHandler(this.closeMe_Click);
-            // 
-            // cmdString
-            // 
-            this.cmdString.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdString.Location = new System.Drawing.Point(284, 117);
-            this.cmdString.Name = "cmdString";
-            this.cmdString.Size = new System.Drawing.Size(689, 25);
-            this.cmdString.TabIndex = 10;
-            // 
-            // runSQLQuery
-            // 
-            this.runSQLQuery.Location = new System.Drawing.Point(153, 117);
-            this.runSQLQuery.Name = "runSQLQuery";
-            this.runSQLQuery.Size = new System.Drawing.Size(111, 23);
-            this.runSQLQuery.TabIndex = 11;
-            this.runSQLQuery.Text = "Run this SQL query";
-            this.runSQLQuery.UseVisualStyleBackColor = true;
-            this.runSQLQuery.Click += new System.EventHandler(this.runSQLQuery_Click);
             // 
             // sasDb
             // 
             this.sasDb.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sasDb.Location = new System.Drawing.Point(153, 57);
+            this.sasDb.Location = new System.Drawing.Point(46, 55);
             this.sasDb.Name = "sasDb";
-            this.sasDb.Size = new System.Drawing.Size(820, 25);
+            this.sasDb.Size = new System.Drawing.Size(357, 25);
             this.sasDb.TabIndex = 12;
             // 
-            // tableName
+            // groupBox1
             // 
-            this.tableName.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableName.Location = new System.Drawing.Point(284, 86);
-            this.tableName.Name = "tableName";
-            this.tableName.Size = new System.Drawing.Size(689, 25);
-            this.tableName.TabIndex = 13;
+            this.groupBox1.Controls.Add(this.sasDb);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.masDb);
+            this.groupBox1.Controls.Add(this.connect);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(418, 130);
+            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Connection";
             // 
-            // button1
+            // groupBox2
             // 
-            this.button1.Location = new System.Drawing.Point(25, 51);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 14;
-            this.button1.Text = "Get Info";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.getInfoClick);
+            this.groupBox2.Controls.Add(this.deleteObject);
+            this.groupBox2.Controls.Add(this.objectId);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.tableName);
+            this.groupBox2.Controls.Add(this.verify);
+            this.groupBox2.Location = new System.Drawing.Point(464, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(613, 130);
+            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Check Table";
+            this.groupBox2.Visible = false;
             // 
-            // clearScreen
+            // deleteObject
             // 
-            this.clearScreen.Location = new System.Drawing.Point(25, 137);
-            this.clearScreen.Name = "clearScreen";
-            this.clearScreen.Size = new System.Drawing.Size(75, 23);
-            this.clearScreen.TabIndex = 15;
-            this.clearScreen.Text = "ClearScreen";
-            this.clearScreen.UseVisualStyleBackColor = true;
-            this.clearScreen.Click += new System.EventHandler(this.ClearResut);
+            this.deleteObject.Location = new System.Drawing.Point(392, 51);
+            this.deleteObject.Name = "deleteObject";
+            this.deleteObject.Size = new System.Drawing.Size(111, 23);
+            this.deleteObject.TabIndex = 17;
+            this.deleteObject.Text = "Delete object";
+            this.deleteObject.UseVisualStyleBackColor = true;
+            this.deleteObject.Click += new System.EventHandler(this.deleteObject_Click);
+            // 
+            // objectId
+            // 
+            this.objectId.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.objectId.Location = new System.Drawing.Point(392, 19);
+            this.objectId.Name = "objectId";
+            this.objectId.Size = new System.Drawing.Size(176, 25);
+            this.objectId.TabIndex = 16;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(337, 24);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(49, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Object id";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(63, 13);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Table name";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 513);
+            this.ClientSize = new System.Drawing.Size(1088, 513);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.clearScreen);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.tableName);
-            this.Controls.Add(this.sasDb);
-            this.Controls.Add(this.runSQLQuery);
-            this.Controls.Add(this.cmdString);
             this.Controls.Add(this.closeMe);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.result);
-            this.Controls.Add(this.verify);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.connect);
-            this.Controls.Add(this.masDb);
             this.Name = "MainForm";
             this.Text = "Main";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -194,19 +232,22 @@
 
         #endregion
 
-        private System.Windows.Forms.Button connect;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button verify;
         private System.Windows.Forms.TextBox result;
+        private System.Windows.Forms.Button closeMe;
+        private System.Windows.Forms.TextBox tableName;
+        private System.Windows.Forms.Button clearScreen;
+        private System.Windows.Forms.Button connect;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox masDb;
-        private System.Windows.Forms.Button closeMe;
-        private System.Windows.Forms.TextBox cmdString;
-        private System.Windows.Forms.Button runSQLQuery;
         private System.Windows.Forms.TextBox sasDb;
-        private System.Windows.Forms.TextBox tableName;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button clearScreen;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox objectId;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button deleteObject;
     }
 }
 

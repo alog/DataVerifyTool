@@ -12,16 +12,16 @@ namespace muweili
         //// table name format  dbname.schema.tablename , sample: acvscore.access.operator
         public string name;   
         public List<TableForeignKey> foreignKeylist;  // foreign key list for this table
-        private CcureDatabase parentDatabase;
+        public CcureDatabase parentDatabase;
         public CcureTable(CcureDatabase db,string tableName)
         {
             parentDatabase = db;
-            name = tableName;
-            foreignKeylist = getFKList();
+            name = tableName.ToLower();
+            foreignKeylist = getFKListIDependOn();
         }
 
 
-        private List<TableForeignKey> getFKList( )
+        public List<TableForeignKey> getFKListIDependOn( )
         {
             List<TableForeignKey> fKlist = new List<TableForeignKey>();
             foreach (TableForeignKey fk in parentDatabase.foreignKeylist)
@@ -32,6 +32,30 @@ namespace muweili
                 }
             }
             return fKlist;
+        }
+
+        public List<TableForeignKey> getFKListDependOnMe()
+        {
+            List<TableForeignKey> fKlist = new List<TableForeignKey>();
+            foreach (TableForeignKey fk in parentDatabase.foreignKeylist)
+            {
+                if (this.name == fk.referenceTableName.ToLower())
+                {
+                    fKlist.Add(fk);
+                }
+            }
+            return fKlist;
+        }
+
+
+        public List<CcureTable> tableDependOnMe()
+        {
+            List<CcureTable> result = new List<CcureTable>();
+            foreach (TableForeignKey fk in this.getFKListDependOnMe())
+            {
+                result.Add(new CcureTable(this.parentDatabase, fk.tableName));
+            } 
+            return result;
         }
 
         public List<TableRecordIssue> checkFK()

@@ -17,12 +17,19 @@ namespace muweili
 
  
 
-        static public Dictionary<string, string[]> TABLE_KEY = new Dictionary<string, string[]>()
+        static public Dictionary<string, string[]> TABLE_KEY_TO_COMPARE = new Dictionary<string, string[]>()
         {   
             // table name use full name , like acvscore.Access.Personnel
+            //这个字典用于检索对应的表，应该检查哪些我们感兴趣的列，
             {"operator"+Ccure2_3, new string[] {"dbo.operator","objectid", "name", "PartitionID","WindowsPrincipal","Description" } },
-            {"personnel"+Ccure2_3, new string[] {"Access.Personnel","objectid", "name", "PartitionID" } }
-        };
+            {"personnel"+Ccure2_3, new string[] {"Access.Personnel","objectid", "name", "PartitionID" } },
+            {"partition"+Ccure2_3, new string[] {"dbo.partition","objectid", "name"}},
+            {"credential"+Ccure2_3, new string[] {"access.credential","objectid", "name","PartitionID","cardnumber","personnelid","chuid"}},
+            {"ApplicationServer"+Ccure2_3, new string[] {"dbo.ApplicationServer","objectid", "name","RangeStart","RangeEnd"}}
+
+
+
+         };
 
      
 

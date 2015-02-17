@@ -7,20 +7,27 @@ namespace muweili
 {
     public class TableRecordIssue
     {
-        private string tableName;
-        private int objectId;
-        private string issue;
-
-
+        public string tableName { get; set; }
+        public int objectId { get; set; }
+        public string desc { get; set; } 
+         
         public TableRecordIssue(string n, int id, string text)
         {
             tableName = n;
             objectId = id;
-            issue = text;
+            desc = text;
         }
         public string toString()
         {
-            return(String.Format("Issue found: {0}, objectId={1}, {2}", tableName, objectId.ToString(),issue));
+            if (tableName != null)
+            {
+                return (String.Format("Table: {0},(objectId){1}, {2}", tableName, objectId.ToString(), desc));
+            }
+            else
+            {
+                return (String.Format("{0}", desc));
+            }
+
         }
 
     }

@@ -52,6 +52,18 @@ order by t.TABLE_CATALOG,t.TABLE_SCHEMA, t.TABLE_NAME " ;
             return allTableNames;
         }
 
+        public List<CcureTable> getAllTable()
+        {
+            List<CcureTable> result = new List<CcureTable>();
+            List<string> allTable = getAllTableNameList();
+            foreach(string tbl in allTable)
+            {
+                result.Add(new CcureTable(this,tbl));
+            }
+            return result;
+        }
+
+
         // return a string with all table name, seperatre by ","  ;
         public string getAllTableNameString()
         {
@@ -85,7 +97,7 @@ order by t.TABLE_CATALOG,t.TABLE_SCHEMA, t.TABLE_NAME " ;
         {
             List<string> allTable = getAllTableNameList();
             List<CcureTable> result = new List<CcureTable>();
-            string s = (tbl.StartsWith(".") ? tbl.ToLower() : "." + tbl.ToLower());
+            string s = (tbl.Contains(".") ? tbl.ToLower() : "." + tbl.ToLower());
             foreach (string tmp in allTable)
             {
                 if (tmp.ToLower().EndsWith(s))
@@ -147,26 +159,33 @@ order by TableName";
         {
             List<TableRecordIssue> result = new List<TableRecordIssue>();
             List<CcureTable> tables = getTableWhoseNameLike(tableName);
-            if (tables.Count==2) 
+            string srv = this.parentSqlServer.applicationServerName;
+            if (tables.Count == 2)
             {
-                List<int> list0= tables[0].getObjectId();
+                List<int> list0 = tables[0].getObjectId();
                 List<int> list1 = tables[1].getObjectId();
+                
                 foreach (int i in list0)
-                { 
-                    if (!list1.Contains(i)) 
+                {
+                    if (!list1.Contains(i))
                     {
-                        result.Add( new TableRecordIssue(tables[0].name, i, "ObjectId not in "+tables[1].name));
+                        result.Add(new TableRecordIssue(srv + " " + tables[0].name, i, "Not found in " + tables[1].name));
                     }
                 }
                 foreach (int i in list1)
-                { 
-                    if (!list0.Contains(i)) 
+                {
+                    if (!list0.Contains(i))
                     {
-                        result.Add(new TableRecordIssue(tables[1].name, i, "ObjectId not in " + tables[0].name));
+                        result.Add(new TableRecordIssue(srv + " " + tables[1].name, i, "Not found in " + tables[0].name));
                     }
                 }
-  
+
             }
+            else
+            {
+                result.Add( new TableRecordIssue(null,0,string.Format("{0}, no pair talbe for {1}",srv, tableName)));
+            }
+
             return result;
         }
 
