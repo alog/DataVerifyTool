@@ -47,6 +47,19 @@ namespace muweili
             return fKlist;
         }
 
+        public TableForeignKey getFKIDependon(CcureTable table)
+        {
+            //TableForeignKey fk = null;
+            List<TableForeignKey> fKlist = this.getFKListIDependOn();
+            foreach (TableForeignKey fk in this.getFKListIDependOn())
+            {
+                if (table.toString() == fk.referenceTableName.ToLower())
+                {
+                    return fk;
+                }
+            }
+            return null;
+        }
 
         public List<CcureTable> tableDependOnMe()
         {

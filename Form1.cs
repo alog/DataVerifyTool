@@ -258,12 +258,14 @@ make sure you current logged on user has privile to access it.
                     foreach (TableForeignKey fk in fks)
                     { LogToScreenAndFile(fk.toString()); 
                     }
+                    LogToScreenAndFile("----------");
+                    //LogToScreenAndFile("--" + table.getFKIDependon(new CcureTable(table.parentDatabase, "acvscore.access.partition")).toString());
                 }
 
                 LogToScreenAndFile("--");
                 LogToScreenAndFile("--");
-                StringBuilder condition = new StringBuilder();
-                condition.Append("WHERE objectid=" + objId);
+                string condition = "WHERE objectid=" + objId;
+                 
                 foreach (CcureTable table in tables)
                 {   
                      killObject(   table, condition );
@@ -272,44 +274,48 @@ make sure you current logged on user has privile to access it.
             } 
         }
 
-        private void killObject(CcureTable table, StringBuilder queryCondition)
+        private void killObject(CcureTable table, String  queryCondition)
         {   
-            // queryCondition example :  "WHERE objectid=1234"
-             
-            List<TableForeignKey> fks = table.getFKListDependOnMe();
-
+            /* queryCondition example :  "WHERE objectid=1234"
             // fks 列出所有对当前表有外键依赖的表， 其格式如下
-//acvscore.Access.Personnel PartitionID --> acvscore.Access.Partition ObjectID foreign key: FK_Personnel_PartitionID
+            //acvscore.Access.Personnel PartitionID --> acvscore.Access.Partition ObjectID foreign key: FK_Personnel_PartitionID
             // 这个例子中，personnel表，列PartitionID是外键 指向 Partition表的ObjectID这个列
+            */
 
-            /*if (fks.Count == 0)
+            List<TableForeignKey> fks = table.getFKListDependOnMe();
+            foreach (TableForeignKey fk in fks)
             {
-                LogToScreenAndFile("DELETE FROM " + table.toString() + " " + queryCondition + ";");
-                // 如果当前表没有被其他表外键引用，那么就直接可以删除记录
-                // 生成的命令就是 :  DELETE FROM table WHERE objectid=1234;
-            }*/
+                
+                if (string.Equals(fk.tableName, fk.referenceTableName))
+                {   //如果这个外键 是一个表某列外键指向本表， 例如Area这个表
+                    //则要特别声明如此处理
+                    CcureTable currentTbl = new CcureTable(table.parentDatabase, fk.tableName);
+                    TableForeignKey currentFK=currentTbl.getFKIDependon(table);
 
-            
-                foreach (TableForeignKey fk in fks)
+                    string sqlText = string.Format(
+                    "DELETE FROM {0} WHERE {1} IN (SELECT {2} FROM {3} {4});",
+                                 currentFK.tableName, currentFK.columnName, 
+                                 currentFK.referenceColName, table.toString(), queryCondition);
+                    LogToScreenAndFile(sqlText);
+                }
+                else
                 {
                     //如果当前表有被其他表外键引用，那么对于每一个引用的表，做迭代，删除其记录 
                     //例如对上面那个例子，要删除partition记录，就必须先删除personnel记录，
                     //生成的命令就是：
                     // DELETE FROM personnel WHERE PartitionID in （SELECT ObjectID FROM partition 
                     //        WHERE  objectid=1234);
-                    StringBuilder condition = new StringBuilder(); 
-                    condition.Append(string.Format("WHERE {0} in (SELECT {1} from {2} {3})",
-                         fk.columnName, fk.referenceColName, fk.referenceTableName, queryCondition));
+                    String condition = string.Format("WHERE {0} in (SELECT {1} from {2} {3})",
+                        fk.columnName, fk.referenceColName, fk.referenceTableName, queryCondition);
                     killObject(new CcureTable(table.parentDatabase, fk.tableName), condition);
                 }
-                LogToScreenAndFile("DELETE FROM " + table.toString() + " " + queryCondition + ";");
-              
+                
+            }
+
+            // 如果当前表没有被其他表外键引用，那么就直接可以删除记录
+            // 生成的命令就是 :  DELETE FROM table WHERE objectid=1234
+            LogToScreenAndFile("DELETE FROM " + table.toString() + " " + queryCondition + ";");
              
-        }
-
-
-     
-   
-         
+        }         
     }
 }
