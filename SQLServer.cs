@@ -22,35 +22,39 @@ namespace muweili.SqlServer
         private LogWriter myLogger = LogWriter.Instance; 
         private LogWriter logger = LogWriter.Instance; 
 
-        public CcureDatabaseServer(string   serverName){
-             this.connectionString = makeConnectionString(serverName);
+        public CcureDatabaseServer(string serverName){
+             
+            this.connectionString = makeConnectionString(serverName);
+            SqlConnection cnn = new SqlConnection(connectionString);
+            try {
+                cnn.Open();
+                connectOK = true;
+            }
+            catch (Exception ex)
+            {
+                
+                connectOK = false;
+                throw ex ;
+            }
+            finally
+            {
+                cnn.Close();
+            }
+            detectCcureVersion(); // detect the ccure version// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 这里要加入错误处理
+            detectApplicationServer();
         }
 
         // this one is to open connection & return error message for troubleshooting.
         public String OpenConnectionWithErrorReturn()
         {  
             SqlConnection cnn = new SqlConnection(connectionString);
-            try
-            {
+             
                 cnn.Open();
                 connectOK = true;
-                if (getDBServerVersion() == Ccure9000.Ccure2_3)
+                if (getDBServerVersion() == Ccure9000.Ccure2_3VersionSignature)
                 {
                     // ########### 
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                //LogToScreenAndFile(ex.Message);
-                connectOK = false;
-                return (string.Format ("Connecting to {0} failed. {1}",this.connectionString,ex.Message));
-            }
-            finally
-            {
-                cnn.Close();
-            }
+                } 
             return null;
         }
 
@@ -86,6 +90,7 @@ namespace muweili.SqlServer
         }
 
 
+
         public string getDBServerName()
         {
             string serverName;
@@ -103,14 +108,13 @@ namespace muweili.SqlServer
         }
 
         // check databaseVersion table 
-        public string getCcureVersion()
+        private void detectCcureVersion()
         { 
             // 0.0.640.0024  is 2.2
             // 2.30.25 is 2.3
              
             string result=null  ;
-            CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE);
-
+            CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE); 
             if (acvscore.hasTable(Ccure9000.ACCESS_DATABASEVERSION))
             {   // it's 2.3
                 string sqlText = string.Format("SELECT PlatformObjectVersion  FROM  {0}", Ccure9000.ACCESS_DATABASEVERSION);
@@ -120,9 +124,7 @@ namespace muweili.SqlServer
                     using (var sqlCmd = new SqlCommand(sqlText, connection))
                     {
                         result = (string)((sqlCmd.ExecuteScalar() != null) ? sqlCmd.ExecuteScalar() : null);
-                    }
-                     
-
+                    } 
                 }
             }
             else
@@ -142,24 +144,34 @@ namespace muweili.SqlServer
                 }
 
             }
-            if (result==null )
-            {
-                return null;
+  
+            if (result.StartsWith(Ccure9000.Ccure2_3VersionSignature))
+            { 
+                ccureVersion = Ccure9000.Ccure_Verdion_Dict[Ccure9000.Ccure2_3VersionSignature];
             }
-
-
-            if (result.StartsWith(Ccure9000.Ccure2_3))
+            if (result.StartsWith(Ccure9000.Ccure2_2VersionSignature))
             {
-                return Ccure9000.Ccure2_3;
-            }
-            if (result.StartsWith(Ccure9000.Ccure2_2))
+                ccureVersion = Ccure9000.Ccure_Verdion_Dict[Ccure9000.Ccure2_2VersionSignature]; 
+            } 
+        }
+
+        private void detectApplicationServer()
+        {
+            
+            // XXXXX Here might need to double check, XXXXXXXXXXXXXXXXXXX 
+
+            if (ccureVersion == Ccure9000.Ccure2_3)
             {
-                return Ccure9000.Ccure2_2;
-            }
-
-            return null;
-
-
+                DataTable dt = this.getDataTableToCompare("ApplicationServer");
+                // assume the lowest ID it's the MAS.
+                DataView dv = dt.DefaultView;
+                dv.Sort = "objectid asc";
+                DataTable sortedDT = dv.ToTable();
+                applicationServerName = sortedDT.Rows[0]["name"].ToString();
+                applicationServerObjectID = Convert.ToInt32(sortedDT.Rows[0]["objectid"]);
+                rangeStart = Convert.ToInt32(sortedDT.Rows[0]["rangeStart"]);
+                rangeEnd = Convert.ToInt32(sortedDT.Rows[0]["rangeEnd"]);
+            } 
         }
 
         public bool hasDb(string dbName)
@@ -179,19 +191,38 @@ namespace muweili.SqlServer
             return result;
         }
 
-        public DataTable getDataTableToCompare(  string shortTableName)
-        { 
-            DataTable dt = new DataTable();
-             
-            string k=shortTableName + this.getCcureVersion();
-            if (!Ccure9000.TABLE_KEY_TO_COMPARE.ContainsKey(k))
+        public string[] getTableAndColumn(string shortTableName)
+        {
+            string[] array = null;
+            string k = shortTableName + this.ccureVersion;
+            if (Ccure9000.TABLE_COLUMN_TO_COMPARE.ContainsKey(k))
             {
-                return null;
-            }  
-    
-            string[] array = Ccure9000.TABLE_KEY_TO_COMPARE[k];
-             
-            string table = array[0]; 
+                array = Ccure9000.TABLE_COLUMN_TO_COMPARE[k];
+            }
+            else
+            {
+                // 对于一些表如果没有预先定义的列，就只比较id即可
+                // {"dbo.partition","objectid", "name"}
+                if (ccureVersion == Ccure9000.Ccure2_3)
+                {
+                    CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE);
+                    List<string> tables = acvscore.getTableNameListWhoseNameLike(shortTableName);
+                    if (tables.Count >= 1)
+                    {
+                        array = new string[] { tables[0], Ccure9000.objectID };
+                        //获得第一个表即可，排序上 access.operator 先于 dbo.operator
+                    }
+                }
+            } 
+            return (array!=null?array:null);
+        }
+
+        public DataTable getDataTableToCompare(  string shortTableName)
+        {
+            DataTable dt = new DataTable();
+            string[] array = getTableAndColumn(shortTableName);
+            if (array == null) { return dt; }   //没有找到同名的表， 返回空值； 
+            string table = array[0];
             int n=array.Count()-1 ;
             string[] columnArray = new string[n] ;
             Array.Copy(array, 1, columnArray, 0, n );
@@ -224,7 +255,7 @@ namespace muweili.SqlServer
             result.Append(this.getDBServerName() + (this.connectOK ? " is connected." : " not connected."));
             result.Append(System.Environment.NewLine + "\t"+this.connectionString);
             result.Append(System.Environment.NewLine + "\t" + this.getDBServerVersion());
-            result.Append(System.Environment.NewLine + "\tCcure 9000 version: " + this.getCcureVersion());
+            result.Append(System.Environment.NewLine + "\tCcure 9000 version: " + this.ccureVersion);
             return result.ToString();
         }
 
@@ -232,19 +263,16 @@ namespace muweili.SqlServer
         {   
             // here, the t
             List<TableRecordIssue> result = new List<TableRecordIssue>();
-            if (getCcureVersion() == Ccure9000.Ccure2_3)
+            if (ccureVersion == Ccure9000.Ccure2_3VersionSignature)
             {
                 CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE);
-                List<CcureTable> tables = acvscore.getTableWhoseNameLike(shortTableName);
-            
+                List<CcureTable> tables = acvscore.getTableWhoseNameLike(shortTableName); 
             }
-
-
-
-
+             
             return result;
         }
 
+        
 
 
     }

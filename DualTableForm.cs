@@ -20,11 +20,24 @@ namespace muweili
             sasDGV = sasDataGridView;
         }
 
-        public DualTableForm(SqlConnection cnn1, SqlConnection cnn2, string tablename)
+        public DualTableForm(DataTable masDT)
         {
             InitializeComponent();
             masDGV = masDataGridView;
+            masDGV.RowHeadersVisible = false;
+            //masDGV.AutoResizeColumns(DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader);
+            masDGV.DataSource = masDT;
             sasDGV = sasDataGridView;
+        }
+
+        private void sasDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void masDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
 

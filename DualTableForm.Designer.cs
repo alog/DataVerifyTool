@@ -46,6 +46,7 @@
             this.masDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.masDataGridView.Size = new System.Drawing.Size(560, 385);
             this.masDataGridView.TabIndex = 0;
+            this.masDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.masDataGridView_CellContentClick);
             // 
             // masLabel
             // 
@@ -75,8 +76,9 @@
             this.sasDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.sasDataGridView.Size = new System.Drawing.Size(560, 385);
             this.sasDataGridView.TabIndex = 2;
+            this.sasDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.sasDataGridView_CellContentClick);
             // 
-            // TableForm
+            // DualTableForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -85,7 +87,7 @@
             this.Controls.Add(this.sasDataGridView);
             this.Controls.Add(this.masLabel);
             this.Controls.Add(this.masDataGridView);
-            this.Name = "TableForm";
+            this.Name = "DualTableForm";
             this.Text = "Table";
             ((System.ComponentModel.ISupportInitialize)(this.masDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sasDataGridView)).EndInit();

@@ -17,7 +17,7 @@ namespace muweili.Database
         {
             parentSqlServer = sqlServer;
             this.name = name;
-            foreignKeylist = generateFKList();
+            foreignKeylist = generateFKList();  
         }
          
 
@@ -75,16 +75,33 @@ order by t.TABLE_CATALOG,t.TABLE_SCHEMA, t.TABLE_NAME " ;
             return (getAllTableNameString().Contains(tblName));
         }
 
+        // 返回所有包含该关键字的表名
+        public List<string> getTableNameListWhoseNameContains(string tbl)
+        {
+            List<string> allTable = getAllTableNameList();
+            List<string> result = new List<string>();
+            foreach (string tmp in allTable)
+            {   //   本类中 表的全名称名字格式db.schema.name， 全小写
+                //    
+                string s =  tbl.ToLower() ;
+                if (tmp.ToLower().Contains(s))  //
+                {
+                    result.Add(tmp.ToLower());
+                }
+            }
+            return result;
+        }
+
         // return a name list<string> 
         public List<string> getTableNameListWhoseNameLike(string tbl)
         {
             List<string> allTable = getAllTableNameList();
             List<string> result=new List<string>();
             foreach ( string tmp in allTable)
-            {   //   
-                //   compare the last part......db.schema.name.....
-                string s = (tbl.StartsWith(".") ? tbl.ToLower() : "." + tbl.ToLower());
-                if (tmp.ToLower().EndsWith(s))
+            {   //   本类中 表的全名称名字格式db.schema.name， 全小写
+                //   如果用户输入没有.的符号，则加一个， 用来比较表全名称的结尾部分 
+                string s = (tbl.Contains(".") ? tbl.ToLower() : "." + tbl.ToLower());
+                if (tmp.ToLower().EndsWith(s))  //
                 {
                     result.Add(tmp.ToLower());
                 }
@@ -95,15 +112,14 @@ order by t.TABLE_CATALOG,t.TABLE_SCHEMA, t.TABLE_NAME " ;
         // return a name list<CcureTable> 
         public List<CcureTable> getTableWhoseNameLike(string tbl)
         {
-            List<string> allTable = getAllTableNameList();
+             
+            List<string> tableList = getTableNameListWhoseNameLike(tbl );
             List<CcureTable> result = new List<CcureTable>();
-            string s = (tbl.Contains(".") ? tbl.ToLower() : "." + tbl.ToLower());
-            foreach (string tmp in allTable)
+             
+            foreach (string tmp in tableList)
             {
-                if (tmp.ToLower().EndsWith(s))
-                {
-                    result.Add(new CcureTable(this, tmp.ToLower()));
-                }
+                result.Add(new CcureTable(this, tmp.ToLower()));
+                
             }
             return result;
         }
