@@ -392,8 +392,7 @@ make sure you current logged on user has privile to access it.
                 }
                 else
                 { LogToScreenAndFile( "No tale name like "+tableName.Text ); }
-                 
-
+         
             }
 
             

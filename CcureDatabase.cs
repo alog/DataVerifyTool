@@ -84,11 +84,14 @@ order by t.TABLE_CATALOG,t.TABLE_SCHEMA, t.TABLE_NAME " ;
             {   //   本类中 表的全名称名字格式db.schema.name， 全小写
                 //    
                 string s =  tbl.ToLower() ;
-                if (tmp.ToLower().Contains(s))  //
+                string shortTblName = tmp.Substring(tmp.LastIndexOf(".") + 1);
+
+                if (shortTblName.ToLower().Contains(s))  //
                 {
                     result.Add(tmp.ToLower());
                 }
             }
+            result.Sort();
             return result;
         }
 
