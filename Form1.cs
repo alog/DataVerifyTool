@@ -119,7 +119,7 @@ make sure you current logged on user has privile to access it.
             {
                 //如果只有MAS 或独立服务器，则只显示该服务器
                 DataTable dt = mas.getDataTableToCompare(tableName.Text); 
-                DualTableForm df = new DualTableForm(dt);
+                DualTableForm df = new DualTableForm(dt,null);
                 df.Show();
             }
             else
@@ -129,6 +129,7 @@ make sure you current logged on user has privile to access it.
                 LogToScreenAndFile(string.Format("Pair table comparing : {0}", tableName.Text));
                 LogToScreenAndFile(string.Join(".", mas.getTableAndColumn(tableName.Text))); 
                 DataTable dt = mas.getDataTableToCompare(tableName.Text);
+                DataTable sasDt = sas.getDataTableToCompare(tableName.Text);
                 List<TableRecordIssue> issues = new List<TableRecordIssue>();
                 issues.AddRange(masSasCompare(mas, sas, tableName.Text));
                 if (issues.Count != 0)
@@ -140,7 +141,7 @@ make sure you current logged on user has privile to access it.
                     LogToScreenAndFile(string.Format("Pair table comparing  : no issue found."));
                 }
 
-                DualTableForm df = new DualTableForm(dt);
+                DualTableForm df = new DualTableForm(dt,sasDt);
                 df.Show();
             
             }

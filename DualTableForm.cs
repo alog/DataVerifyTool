@@ -20,14 +20,22 @@ namespace muweili
             sasDGV = sasDataGridView;
         }
 
-        public DualTableForm(DataTable masDT)
+        public DualTableForm(DataTable masDT, DataTable sasDT)
         {
             InitializeComponent();
             masDGV = masDataGridView;
             masDGV.RowHeadersVisible = false;
             //masDGV.AutoResizeColumns(DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader);
             masDGV.DataSource = masDT;
-            sasDGV = sasDataGridView;
+             
+            if (sasDT != null)
+            {
+                sasDGV = sasDataGridView;
+                sasDGV.RowHeadersVisible = false;
+                //masDGV.AutoResizeColumns(DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader);
+                sasDGV.DataSource = sasDT;
+             }
+
         }
 
         private void sasDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
