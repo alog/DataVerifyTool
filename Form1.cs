@@ -13,6 +13,7 @@ using muweili.SqlServer;
 using muweili.Database;
 using muweili;
 using System.Diagnostics;
+using System.Security.Principal;
 
 
 
@@ -43,6 +44,8 @@ make sure you current logged on user has privile to access it.
         } 
         private void connectClick(object sender, EventArgs e)
         {
+            IntPtr accountToken = WindowsIdentity.GetCurrent().Token;
+            LogToScreenAndFile(" Current credential : " + WindowsIdentity.GetCurrent().Name);
             mas = null;
             sas = null;  //  initialize the mas or sas string;
             MASConnect.Enabled = false;
@@ -94,7 +97,7 @@ make sure you current logged on user has privile to access it.
                 masSasConfig(mas, sas);
                 LogToScreenAndFile(mas.getRangeInfo());
                 LogToScreenAndFile(sas.getRangeInfo());
-                LogToScreenAndFile(" sas not null");
+                //LogToScreenAndFile(" sas not null");
                  
             }
              
