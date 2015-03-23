@@ -5,6 +5,7 @@ using System.Text;
 using muweili.SqlServer;
 using muweili;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace muweili.Database
 {
@@ -208,6 +209,20 @@ order by TableName";
             return result;
         }
 
+        public DataTable getDataTableFromQuery(string sqlText)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this.parentSqlServer.connectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCmd = new SqlCommand(sqlText, connection);
+                SqlDataReader rdr = sqlCmd.ExecuteReader();
+                dt.Load(rdr);
+            }
+            
+            //dt.PrimaryKey = new DataColumn[] { dt.Columns["objectid"] };
+            return dt;
+        }
 
 
     }

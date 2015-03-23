@@ -40,13 +40,13 @@
             this.sasDb = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SASConnect = new System.Windows.Forms.CheckBox();
             this.MASConnect = new System.Windows.Forms.CheckBox();
             this.deleteObject = new System.Windows.Forms.Button();
             this.objectId = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -136,6 +136,7 @@
             this.masDb.Name = "masDb";
             this.masDb.Size = new System.Drawing.Size(298, 25);
             this.masDb.TabIndex = 0;
+         
             // 
             // sasDb
             // 
@@ -158,6 +159,7 @@
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection";
+             
             // 
             // groupBox2
             // 
@@ -177,6 +179,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Action on table";
             this.groupBox2.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(208, 96);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(103, 23);
+            this.button1.TabIndex = 18;
+            this.button1.Text = "Similar table";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // SASConnect
             // 
@@ -236,16 +248,6 @@
             this.label3.Size = new System.Drawing.Size(63, 13);
             this.label3.TabIndex = 14;
             this.label3.Text = "Table name";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(208, 96);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(103, 23);
-            this.button1.TabIndex = 18;
-            this.button1.Text = "Similar table";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 

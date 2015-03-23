@@ -42,6 +42,7 @@ namespace muweili.SqlServer
             }
             detectCcureVersion(); // detect the ccure version// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 这里要加入错误处理
             detectApplicationServer();
+            ;
         }
 
         // this one is to open connection & return error message for troubleshooting.
@@ -51,10 +52,7 @@ namespace muweili.SqlServer
              
                 cnn.Open();
                 connectOK = true;
-                if (getDBServerVersion() == Ccure9000.Ccure2_3VersionSignature)
-                {
-                    // ########### 
-                } 
+   
             return null;
         }
 
@@ -112,6 +110,7 @@ namespace muweili.SqlServer
         { 
             // 0.0.640.0024  is 2.2
             // 2.30.25 is 2.3
+            // 2.40.8 is 2.4
              
             string result=null  ;
             CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE); 
@@ -145,32 +144,41 @@ namespace muweili.SqlServer
 
             }
   
-            if (result.StartsWith(Ccure9000.Ccure2_3VersionSignature))
-            { 
-                ccureVersion = Ccure9000.Ccure_Verdion_Dict[Ccure9000.Ccure2_3VersionSignature];
-            }
+
             if (result.StartsWith(Ccure9000.Ccure2_2VersionSignature))
             {
-                ccureVersion = Ccure9000.Ccure_Verdion_Dict[Ccure9000.Ccure2_2VersionSignature]; 
+                ccureVersion = Ccure9000.Ccure_Version_Dict[Ccure9000.Ccure2_2VersionSignature]; 
+            }
+            if (result.StartsWith(Ccure9000.Ccure2_3VersionSignature))
+            {
+                ccureVersion = Ccure9000.Ccure_Version_Dict[Ccure9000.Ccure2_3VersionSignature];
+            }
+            if (result.StartsWith(Ccure9000.Ccure2_4VersionSignature))
+            {
+                ccureVersion = Ccure9000.Ccure_Version_Dict[Ccure9000.Ccure2_4VersionSignature];
             } 
+
+
         }
 
         private void detectApplicationServer()
         {
-            
-            // XXXXX Here might need to double check, XXXXXXXXXXXXXXXXXXX 
+            //查询 DBO_APPLICATIONSERVERREGION这个表，获得在此SQL服务器上的Ccure服务器
+            // 
 
-            if (ccureVersion == Ccure9000.Ccure2_3)
+            if (ccureVersion == Ccure9000.Ccure2_3 || ccureVersion == Ccure9000.Ccure2_4)
             {
-                DataTable dt = this.getDataTableToCompare("ApplicationServer");
-                // assume the lowest ID it's the MAS.
-                DataView dv = dt.DefaultView;
-                dv.Sort = "objectid asc";
-                DataTable sortedDT = dv.ToTable();
-                applicationServerName = sortedDT.Rows[0]["name"].ToString();
-                applicationServerObjectID = Convert.ToInt32(sortedDT.Rows[0]["objectid"]);
-                rangeStart = Convert.ToInt32(sortedDT.Rows[0]["rangeStart"]);
-                rangeEnd = Convert.ToInt32(sortedDT.Rows[0]["rangeEnd"]);
+                string sqlText=@"select * from  dbo.ApplicationServer where objectid in (
+select appserverid from  dbo.AppServerPartitions where PartitionOwnedID in (
+select partitionid  from  dbo.applicationserverregion) )";
+                CcureDatabase acvscore=new CcureDatabase(this, Ccure9000.ACVSCORE);
+
+                DataTable dt = acvscore.getDataTableFromQuery(sqlText);
+                //this dt should only have one row record , that's the application server in this SQL server
+                applicationServerName = dt.Rows[0]["name"].ToString();
+                applicationServerObjectID = Convert.ToInt32(dt.Rows[0]["objectid"]);
+                rangeStart = Convert.ToInt32(dt.Rows[0]["rangeStart"]);
+                rangeEnd = Convert.ToInt32(dt.Rows[0]["rangeEnd"]);
             } 
         }
 
@@ -203,7 +211,7 @@ namespace muweili.SqlServer
             {
                 // 对于一些表如果没有预先定义的列，就只比较id即可
                 // {"dbo.partition","objectid", "name"}
-                if (ccureVersion == Ccure9000.Ccure2_3)
+                if (ccureVersion == Ccure9000.Ccure2_3 || ccureVersion == Ccure9000.Ccure2_4)
                 {
                     CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE);
                     List<string> tables = acvscore.getTableNameListWhoseNameLike(shortTableName);
@@ -263,7 +271,7 @@ namespace muweili.SqlServer
         {   
             // here, the t
             List<TableRecordIssue> result = new List<TableRecordIssue>();
-            if (ccureVersion == Ccure9000.Ccure2_3VersionSignature)
+            if (ccureVersion == Ccure9000.Ccure2_3VersionSignature || ccureVersion == Ccure9000.Ccure2_4VersionSignature)
             {
                 CcureDatabase acvscore = new CcureDatabase(this, Ccure9000.ACVSCORE);
                 List<CcureTable> tables = acvscore.getTableWhoseNameLike(shortTableName); 

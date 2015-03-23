@@ -38,8 +38,8 @@ make sure you current logged on user has privile to access it.
         private void MainForm_Load(object sender, EventArgs e)
         {
             result.Text = initMessage;
-            masDb.Text = "srw\\sqlexpress";  //
-            sasDb.Text = "localhost\\sqlexpress";
+            masDb.Text = "localhost\\sqlexpress";  // CABRO2SWHMAS  srw\\sqlexpress
+            sasDb.Text = ""; // "localhost\\sqlexpress";
             tableName.Text = "operator";
         } 
         private void connectClick(object sender, EventArgs e)
@@ -380,19 +380,19 @@ make sure you current logged on user has privile to access it.
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // to create 100 istar doors
+            //  find out the similiar talbe like the name you put in
             tableName.Text = tableName.Text.Trim();
              
             if (mas == null || tableName.Text.Length == 0 ) 
             { return; }
-            if (mas.ccureVersion == Ccure9000.Ccure2_3)
+            if (mas.ccureVersion == Ccure9000.Ccure2_3 || mas.ccureVersion == Ccure9000.Ccure2_4)
             {
                 CcureDatabase acvscore = new CcureDatabase(mas, Ccure9000.ACVSCORE);
                 List<string> result=acvscore.getTableNameListWhoseNameContains(tableName.Text );
                 if (result.Count > 0)
                 {
                     LogToScreenAndFile("The talbe whose name contains " + tableName.Text);
-                    foreach (string s in result) { LogToScreenAndFile(s); }
+                    foreach (string s in result) { LogToScreenAndFile("\t"+s); }
                 }
                 else
                 { LogToScreenAndFile( "No tale name like "+tableName.Text ); }
@@ -404,6 +404,9 @@ make sure you current logged on user has privile to access it.
              
 
         }
-   
+
+ 
+
+ 
     }
 }
